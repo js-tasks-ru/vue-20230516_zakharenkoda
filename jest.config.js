@@ -31,8 +31,12 @@ const config = {
   setupFilesAfterEnv: ['<rootDir>/utility_modules/taskbook-jest-setup.js'],
 
   testMatch: ['**/[0-9][0-9]*/[0-9][0-9]*/**/__tests__/**/*.(spec|test|student-test).[jt]s?(x)'],
-  // https://github.com/facebook/jest/issues/6766
-  testURL: 'http://localhost/',
+
+  testEnvironmentOptions: {
+    url: 'https://localhost',
+    customExportConditions: ['node', 'node-addons'],
+  },
+
   watchPlugins: [require.resolve('jest-watch-typeahead/filename'), require.resolve('jest-watch-typeahead/testname')],
 
   clearMocks: true,
