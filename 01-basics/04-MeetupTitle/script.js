@@ -1,5 +1,3 @@
-// import { createApp } from './vendor/vue.esm-browser.js';
-
 import { createApp } from '../03-MarkedList/vendor/vue.esm-browser.js';
 
 const API_URL = 'https://course-vue.javascript.ru/api';
