@@ -1,24 +1,72 @@
 <template>
   <div class="toasts">
-    <div class="toast toast_success">
-      <UiIcon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
-
-    <div class="toast toast_error">
-      <UiIcon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
+    <VToast
+      v-for="toast in toasts"
+      :key="toast.id"
+      :text="toast.message"
+      :type="toast.options.type"
+      :delay="toast.options.delay"
+      @close="remove(toast)"
+    />
   </div>
 </template>
 
 <script>
-import UiIcon from './UiIcon.vue';
+import { v4 as uuidv4 } from 'uuid';
+import { TOAST_TYPES } from '../toasterService.js';
+
+import VToast from './VToast.vue';
+
+const DEFAULT_DELAY_IN_MS = 5000;
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon },
+  components: {
+    VToast,
+  },
+
+  data() {
+    return {
+      toasts: [],
+    };
+  },
+
+  methods: {
+    show(message, options) {
+      if (!options.type || !message) return;
+
+      const delay = options?.delay ?? TOAST_TYPES[options.type]?.delay;
+
+      this.toasts.push({
+        id: uuidv4(),
+        message,
+        options: {
+          ...options,
+          delay: delay ?? DEFAULT_DELAY_IN_MS,
+        },
+      });
+    },
+
+    remove(toast) {
+      const index = this.toasts.findIndex((elem) => elem === toast);
+      this.toasts.splice(index, 1);
+    },
+
+    success(message, options) {
+      this.show(message, {
+        ...options,
+        type: TOAST_TYPES.SUCCESS.type
+      });
+    },
+
+    error(message, options) {
+      this.show(message, {
+        ...options,
+        type: TOAST_TYPES.ERROR.type,
+      });
+    }
+  },
 };
 </script>
 
@@ -39,35 +87,5 @@ export default {
     bottom: 72px;
     right: 112px;
   }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>
